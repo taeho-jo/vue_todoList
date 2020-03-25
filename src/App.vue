@@ -1,28 +1,71 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div>
+    <TodoHeader />
+    <TodoInput v-on:addTodo="addTodo" />
+    <TodoList v-bind:propsData="todoItems" v-on:removeTodo="removeTodo" />
+    <TodoFooter v-on:removeAll="clearAll" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import TodoHeader from "./components/TodoHeader";
+import TodoInput from "./components/TodoInput";
+import TodoList from "./components/TodoList";
+import TodoFooter from "./components/TodoFooter";
 
 export default {
-  name: "App",
+  data() {
+    return {
+      todoItems: []
+    };
+  },
+  methods: {
+    addTodo(data) {
+      localStorage.setItem(data, data);
+      this.todoItems.push(data);
+    },
+    clearAll() {
+      localStorage.clear();
+      this.todoItems = [];
+    },
+    removeTodo(data, index) {
+      localStorage.removeItem(data);
+      this.todoItems.splice(index, 1);
+    }
+  },
+  created() {
+    if (localStorage.length > 0) {
+      for (let i = 1; i < localStorage.length; i++) {
+        this.todoItems.push(localStorage.key(i));
+        console.log(localStorage.key(i));
+      }
+    }
+  },
   components: {
-    HelloWorld
+    TodoHeader,
+    TodoInput,
+    TodoList,
+    TodoFooter
   }
 };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background: #f6f6f8;
+}
+input {
+  border-style: groove;
+  width: 200px;
+}
+button {
+  border-style: groove;
+}
+.shadow {
+  box-shadow: 5px 10px 10px rgb(0, 0, 0, 0.03);
 }
 </style>
